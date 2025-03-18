@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Medicines - MedCare{% endblock %}
+
+{% block content %}
+<div class="page-header py-5 bg-light">
+    <div class="container">
+        <h1 class="page-title">Medicines</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Medicines</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{{ url_for('products') }}" class="d-block">All Categories</a>
+                        </li>
+                        {% for category in categories %}
+                        <li class="list-group-item">
+                            <a href="{{ url_for('products', category=category.id) }}" class="d-block">{{ category.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Filter by Price</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="min-price" class="form-label">Min Price</label>
+                            <input type="number" class="form-control" id="min-price" placeholder="₹0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="max-price" class="form-label">Max Price</label>
+                            <input type="number" class="form-control" id="max-price" placeholder="₹1000">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4>{{ products|length }} Products</h4>
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="sort" class="me-2">Sort by:</label>
+                    <select class="form-select" id="sort">
+                        <option value="popularity">Popularity</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                        </div>
+                        <div class="product-details">
+                            <h5 class="product-title">{{ product.name }}</h5>
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>(4.5)</span>
+                            </div>
+                            <p class="product-price">₹{{ product.price }}</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-primary">View Details</a>
+                                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

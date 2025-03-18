@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-content">
+        <h1 class="display-4 fw-bold mb-4">Your Health, Our Priority</h1>
+        <p class="lead mb-4">Find trusted medicines, schedule doctor consultations, and explore top hospitals.</p>
+        <form action="{{ url_for('products') }}" method="get" class="search-form">
+            <div class="input-group search-bar">
+                <input type="text" name="search" class="form-control" placeholder="Search for medicines, hospitals, or doctors...">
+                <button class="btn btn-light" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+        <div class="hero-buttons mt-4">
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg me-2">
+                <i class="fas fa-pills me-2"></i>Browse Medicines
+            </a>
+            <a href="{{ url_for('doctors') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user-md me-2"></i>Find Doctors
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3>Quality Medicines</h3>
+                    <p>Authentic medicines delivered to your doorstep with quick delivery options.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Expert Doctors</h3>
+                    <p>Consult with specialized doctors through video calls or in-person appointments.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3>Top Hospitals</h3>
+                    <p>Find the best hospitals near you with detailed information and ratings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top-Selling Medicines -->
+<section class="products py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Top-Selling Medicines</h2>
+            <p class="section-subtitle">Quality healthcare products at affordable prices</p>
+        </div>
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-md-4 col-lg-2 mb-4">
+                <div class="product-card">
+                    <div class="product-badge">Best Seller</div>
+                    <div class="product-image">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                    </div>
+                    <div class="product-details">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.5)</span>
+                        </div>
+                        <p class="product-price">₹{{ product.price }}</p>
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                            <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('products') }}" class="btn btn-outline-primary">View All Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Doctor Consultation -->
+<section class="consultation py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="consultation-content">
+                    <h2 class="section-title">Doctor Consultation</h2>
+                    <p class="section-subtitle">Schedule a face-to-face video consultation with top specialists</p>
+                    <ul class="consultation-features">
+                        <li><i class="fas fa-check-circle me-2"></i>Consult with experienced doctors</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Get prescriptions and medical advice</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Follow-up consultations available</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Secure and private video calls</li>
+                    </ul>
+                    <a href="{{ url_for('doctors') }}" class="btn btn-primary mt-3">Book a Consultation</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="consultation-image">
+                    <img src="{{ url_for('static', filename='images/doctor-consultation.jpg') }}" alt="Doctor Consultation" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Doctors -->
+<section class="doctors py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Our Specialists</h2>
+            <p class="section-subtitle">Consult with top medical professionals</p>
+        </div>
+        <div class="row">
+            {% for doctor in doctors %}
+            <div class="col-md-4 mb-4">
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        <img src="{{ doctor.image_url }}" alt="{{ doctor.name }}" class="img-fluid">
+                    </div>
+                    <div class="doctor-details">
+                        <h5 class="doctor-name">{{ doctor.name }}</h5>
+                        <p class="doctor-specialization">{{ doctor.specialization }}</p>
+                        <p class="doctor-experience">{{ doctor.experience }} Years Experience</p>
+                        <a href="{{ url_for('book_appointment', doctor_id=doctor.id) }}" class="btn btn-outline-primary w-100">Book Appointment</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('doctors') }}" class="btn btn-outline-primary">View All Doctors</a>
+        </div>
+    </div>
+</section>  }}" class="btn btn-outline-primary">View All Doctors</a>
+        </div>
+    </div>
+</section>
+
+<!-- Nearby Hospitals -->
+<section class="hospitals py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hospitals-image">
+                    <img src="{{ url_for('static', filename='images/hospital.jpg') }}" alt="Hospital" class="img-fluid rounded shadow">
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="hospitals-content">
+                    <h2 class="section-title">Nearby Hospitals</h2>
+                    <p class="section-subtitle">Find top-rated hospitals near you with detailed information</p>
+                    <ul class="hospitals-features">
+                        <li><i class="fas fa-check-circle me-2"></i>Locate hospitals based on your location</li>
+                        <li><i class="fas fa-check-circle me-2"></i>View hospital ratings and reviews</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Get directions and contact information</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Book appointments at selected hospitals</li>
+                    </ul>
+                    <a href="{{ url_for('hospitals') }}" class="btn btn-primary mt-3">Find Hospitals</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <p class="section-subtitle">Trusted by thousands of patients</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"MedCare has been a lifesaver for me. The medicine delivery is always on time, and the doctor consultations are very helpful. Highly recommended!"</p>
+                    </div>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">
+                            <img src="{{ url_for('static', filename='images/testimonials/user1.jpg') }}" alt="User">
+                        </div>
+                        <div class="testimonial-info">
+                            <h5>Priya Sharma</h5>
+                            <p>Regular Customer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The hospital finder feature helped me locate a specialized clinic for my treatment. The detailed information and ratings made the decision easy."</p>
+                    </div>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">
+                            <img src="{{ url_for('static', filename='images/testimonials/user2.jpg') }}" alt="User">
+                        </div>
+                        <div class="testimonial-info">
+                            <h5>Rahul Patel</h5>
+                            <p>Patient</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The video consultation with specialists saved me so much time. The doctors are professional, and the platform is very user-friendly."</p>
+                    </div>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">
+                            <img src="{{ url_for('static', filename='images/testimonials/user3.jpg') }}" alt="User">
+                        </div>
+                        <div class="testimonial-info">
+                            <h5>Anita Desai</h5>
+                            <p>Regular Patient</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- App Download -->
+<section class="app-download py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="app-content">
+                    <h2 class="section-title">Download Our Mobile App</h2>
+                    <p class="section-subtitle">Get the MedCare experience on your smartphone</p>
+                    <ul class="app-features">
+                        <li><i class="fas fa-check-circle me-2"></i>Order medicines with just a few taps</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Track your order in real-time</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Book and manage doctor appointments</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Set medication reminders</li>
+                    </ul>
+                    <div class="app-buttons mt-4">
+                        <a href="#" class="btn btn-dark me-2">
+                            <i class="fab fa-apple me-2"></i>App Store
+                        </a>
+                        <a href="#" class="btn btn-dark">
+                            <i class="fab fa-google-play me-2"></i>Google Play
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="app-image text-center">
+                    <img src="{{ url_for('static', filename='images/app-mockup.png') }}" alt="Mobile App" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

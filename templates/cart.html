@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - MedCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Shopping Cart</h1>
+    
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-lg-8">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <div class="cart-item-image">
+                            <img src="{{ item.Product.image_url }}" alt="{{ item.Product.name }}" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>{{ item.Product.name }}</h5>
+                        <p class="text-muted small">SKU: MED-{{ item.Product.id }}</p>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <p class="fw-bold">₹{{ item.Product.price }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm">-</button>
+                            <input type="number" class="form-control form-control-sm text-center" value="{{ item.CartItem.quantity }}" min="1" max="10">
+                            <button type="button" class="btn btn-outline-secondary btn-sm">+</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <p class="fw-bold">₹{{ item.Product.price * item.CartItem.quantity }}</p>
+                        <a href="#" class="text-danger small">Remove</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('products') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                </a>
+                <button class="btn btn-outline-secondary">
+                    <i class="fas fa-sync-alt me-2"></i>Update Cart
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="cart-summary">
+                <h4 class="mb-4">Order Summary</h4>
+                <div class="cart-summary-item">
+                    <span>Subtotal</span>
+                    <span>₹{{ total }}</span>
+                </div>
+                <div class="cart-summary-item">
+                    <span>Shipping</span>
+                    <span>₹50</span>
+                </div>
+                <div class="cart-summary-item">
+                    <span>Tax (5%)</span>
+                    <span>₹{{ total * 0.05 }}</span>
+                </div>
+                <div class="cart-summary-total">
+                    <span>Total</span>
+                    <span>₹{{ total + 50 + (total * 0.05) }}</span>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="mb-3">
+                        <label for="coupon" class="form-label">Coupon Code</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="coupon" placeholder="Enter coupon">
+                            <button class="btn btn-outline-secondary" type="button">Apply</button>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100">
+                        <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-4x mb-3 text-muted"></i>
+        <h3>Your cart is empty</h3>
+        <p class="mb-4">Looks like you haven't added any medicines to your cart yet.</p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary">
+            <i class="fas fa-pills me-2"></i>Browse Medicines
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

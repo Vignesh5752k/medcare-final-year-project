@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - MedCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Medicines</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-5 mb-4">
+            <div class="product-detail-image">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded">
+            </div>
+        </div>
+        <div class="col-md-7">
+            <h2 class="product-detail-title">{{ product.name }}</h2>
+            <div class="product-detail-rating mb-3">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span>(4.5 - 120 reviews)</span>
+            </div>
+            <p class="product-detail-price mb-3">₹{{ product.price }}</p>
+            <div class="product-detail-stock mb-3">
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success">In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                    <span class="badge bg-danger">Out of Stock</span>
+                {% endif %}
+            </div>
+            <div class="product-detail-description mb-4">
+                <p>{{ product.description }}</p>
+            </div>
+            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post" class="mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-secondary" id="decrement">-</button>
+                            <input type="number" class="form-control text-center quantity-input" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                            <button type="button" class="btn btn-outline-secondary" id="increment">+</button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="product-detail-meta">
+                <p><strong>Category:</strong> <a href="{{ url_for('products', category=product.category_id) }}">{{ product.category.name }}</a></p>
+                <p><strong>SKU:</strong> MED-{{ product.id }}</p>
+                <div class="product-detail-share mt-3">
+                    <span class="me-2">Share:</span>
+                    <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-pinterest"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">Shipping & Returns</button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+                    <h4>Product Description</h4>
+                    <p>{{ product.description }}</p>
+                    <h5>Key Benefits</h5>
+                    <ul>
+                        <li>Effective relief from symptoms</li>
+                        <li>Clinically tested formula</li>
+                        <li>Minimal side effects</li>
+                        <li>Fast-acting formula</li>
+                    </ul>
+                    <h5>Directions for Use</h5>
+                    <p>Take as directed by your healthcare professional. Do not exceed the recommended dosage.</p>
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    <h4>Customer Reviews</h4>
+                    <div class="reviews-summary mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <div class="overall-rating">
+                                    <h1>4.5</h1>
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <p>Based on 120 reviews</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="rating-breakdown">
+                                    <div class="rating-item d-flex align-items-center mb-2">
+                                        <span class="me-2">5 stars</span>
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 75%"></div>
+                                        </div>
+                                        <span>75%</span>
+                                    </div>
+                                    <div class="rating-item d-flex align-items-center mb-2">
+                                        <span class="me-2">4 stars</span>
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 15%"></div>
+                                        </div>
+                                        <span>15%</span>
+                                    </div>
+                                    <div class="rating-item d-flex align-items-center mb-2">
+                                        <span class="me-2">3 stars</span>
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 5%"></div>
+                                        </div>
+                                        <span>5%</span>
+                                    </div>
+                                    <div class="rating-item d-flex align-items-center mb-2">
+                                        <span class="me-2">2 stars</span>
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 3%"></div>
+                                        </div>
+                                        <span>3%</span>
+                                    </div>
+                                    <div class="rating-item d-flex align-items-center">
+                                        <span class="me-2">1 star</span>
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" style="width: 2%"></div>
+                                        </div>
+                                        <span>2%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="reviews-list">
+                        <div class="review-item mb-4 pb-4 border-bottom">
+                            <div class="d-flex mb-3">
+                                <div class="review-avatar me-3">
+                                    <img src="{{ url_for('static', filename='images/testimonials/user1.jpg') }}" alt="Reviewer" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Priya Sharma</h5>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <p class="text-muted small">Posted on May 15, 2025</p>
+                                </div>
+                            </div>
+                            <h6>Excellent product!</h6>
+                            <p>This medicine worked wonders for me. The relief was almost immediate and lasted for a good amount of time. Highly recommended!</p>
+                        </div>
+                        
+                        <div class="review-item mb-4 pb-4 border-bottom">
+                            <div class="d-flex mb-3">
+                                <div class="review-avatar me-3">
+                                    <img src="{{ url_for('static', filename='images/testimonials/user2.jpg') }}" alt="Reviewer" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Rahul Patel</h5>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <p class="text-muted small">Posted on April 28, 2025</p>
+                                </div>
+                            </div>
+                            <h6>Good but could be better</h6>
+                            <p>The medicine is effective but takes some time to show results. The packaging is good and delivery was prompt.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="write-review mt-4">
+                        <h5>Write a Review</h5>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Your Rating</label>
+                                <div class="rating-select">
+                                    <i class="far fa-star fs-4 me-1"></i>
+                                    <i class="far fa-star fs-4 me-1"></i>
+                                    <i class="far fa-star fs-4 me-1"></i>
+                                    <i class="far fa-star fs-4 me-1"></i>
+                                    <i class="far fa-star fs-4"></i>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="review-title" class="form-label">Review Title</label>
+                                <input type="text" class="form-control" id="review-title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="review-content" class="form-label">Your Review</label>
+                                <textarea class="form-control" id="review-content" rows="4"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="shipping" role="tabpanel">
+                    <h4>Shipping Information</h4>
+                    <p>We offer fast and reliable shipping options to ensure you receive your medicines promptly.</p>
+                    <ul>
+                        <li>Standard Delivery: 3-5 business days</li>
+                        <li>Express Delivery: 1-2 business days</li>
+                        <li>Same Day Delivery: Available for orders placed before 2 PM in select cities</li>
+                    </ul>
+                    
+                    <h4 class="mt-4">Return Policy</h4>
+                    <p>For the safety and health of our customers, we have a strict return policy for medicines:</p>
+                    <ul>
+                        <li>Medicines can only be returned if they are sealed and unopened</li>
+                        <li>Returns must be initiated within 48 hours of delivery</li>
+                        <li>Damaged or incorrect items will be replaced or refunded</li>
+                        <li>Prescription medicines cannot be returned unless there's a quality issue</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    <div class="related-products mt-5">
+        <h3 class="mb-4">Related Products</h3>
+        <div class="row">
+            {% for product in related_products %}
+            <div class="col-md-3 mb-4">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                    </div>
+                    <div class="product-details">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <p class="product-price">₹{{ product.price }}</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-primary">View</a>
+                            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantityInput = document.querySelector('.quantity-input');
+        const decrementBtn = document.getElementById('decrement');
+        const incrementBtn = document.getElementById('increment');
+        
+        decrementBtn.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+        
+        incrementBtn.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            let max = parseInt(quantityInput.getAttribute('max'));
+            if (value < max) {
+                quantityInput.value = value + 1;
+            }
+        });
+        
+        // Rating selection
+        const ratingStars = document.querySelectorAll('.rating-select i');
+        ratingStars.forEach((star, index) => {
+            star.addEventListener('click', function() {
+                ratingStars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.remove('far');
+                        s.classList.add('fas');
+                    } else {
+                        s.classList.remove('fas');
+                        s.classList.add('far');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+
